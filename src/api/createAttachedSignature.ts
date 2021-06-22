@@ -10,10 +10,11 @@ import { _getDateObj } from '../helpers/_getDateObj';
  *
  * @param thumbprint - отпечаток сертификата
  * @param message - подписываемое сообщение
+ * @param [tsaAddress] - сервер штампа времени
  * @returns подпись в формате PKCS#7
  */
 export const createAttachedSignature = _afterPluginsLoaded(
-  async (thumbprint: string, unencryptedMessage: string | ArrayBuffer): Promise<string> => {
+  async (thumbprint: string, unencryptedMessage: string | ArrayBuffer, tsaAddress?: string): Promise<string> => {
     const { cadesplugin } = window;
     const cadesCertificate = await _getCadesCert(thumbprint);
 
@@ -72,7 +73,14 @@ export const createAttachedSignature = _afterPluginsLoaded(
         let signature: string;
 
         try {
-          signature = __cadesAsyncToken__ + cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_PKCS7_TYPE);
+          if (tsaAddress) {
+            void (__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(tsaAddress));
+            signature =
+              __cadesAsyncToken__ +
+              cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_CADES_X_LONG_TYPE_1, true);
+          } else {
+            signature = __cadesAsyncToken__ + cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_PKCS7_TYPE);
+          }
         } catch (error) {
           console.error(error);
 

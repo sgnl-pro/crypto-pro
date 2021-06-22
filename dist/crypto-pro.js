@@ -2786,9 +2786,10 @@ var _getDateObj_1 = __webpack_require__(/*! ../helpers/_getDateObj */ "./helpers
  *
  * @param thumbprint - отпечаток сертификата
  * @param message - подписываемое сообщение
+ * @param [tsaAddress] - сервер штампа времени
  * @returns подпись в формате PKCS#7
  */
-exports.createAttachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, unencryptedMessage) { return __awaiter(void 0, void 0, void 0, function () {
+exports.createAttachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, unencryptedMessage, tsaAddress) { return __awaiter(void 0, void 0, void 0, function () {
     var cadesplugin, cadesCertificate;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -2842,7 +2843,15 @@ exports.createAttachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
                         }
                         var signature;
                         try {
-                            signature = _generateCadesFn_1.__cadesAsyncToken__ + cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_PKCS7_TYPE);
+                            if (tsaAddress) {
+                                void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(tsaAddress));
+                                signature =
+                                    _generateCadesFn_1.__cadesAsyncToken__ +
+                                        cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_CADES_X_LONG_TYPE_1, true);
+                            }
+                            else {
+                                signature = _generateCadesFn_1.__cadesAsyncToken__ + cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_PKCS7_TYPE);
+                            }
                         }
                         catch (error) {
                             console.error(error);
@@ -2915,9 +2924,10 @@ var _getDateObj_1 = __webpack_require__(/*! ../helpers/_getDateObj */ "./helpers
  *
  * @param thumbprint - отпечаток сертификата
  * @param messageHash - хеш подписываемого сообщения, сгенерированный по ГОСТ Р 34.11-2012 256 бит
+ * @param [tsaAddress] - сервер штампа времени
  * @returns подпись в формате PKCS#7
  */
-exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, messageHash) { return __awaiter(void 0, void 0, void 0, function () {
+exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, messageHash, tsaAddress) { return __awaiter(void 0, void 0, void 0, function () {
     var cadesplugin, cadesCertificate;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -2956,6 +2966,7 @@ exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
                             cadesAuthAttrs = _generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.AuthenticatedAttributes2;
                             void (_generateCadesFn_1.__cadesAsyncToken__ + cadesAuthAttrs.Add(cadesAttrs));
                             void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_Options(cadesplugin.CAPICOM_CERTIFICATE_INCLUDE_WHOLE_CHAIN));
+                            tsaAddress && void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(tsaAddress));
                         }
                         catch (error) {
                             console.error(error);
@@ -2974,7 +2985,7 @@ exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
                         try {
                             signature =
                                 _generateCadesFn_1.__cadesAsyncToken__ +
-                                    cadesSignedData.SignHash(cadesHashedData, cadesSigner, cadesplugin.CADESCOM_PKCS7_TYPE);
+                                    cadesSignedData.SignHash(cadesHashedData, cadesSigner, tsaAddress ? cadesplugin.CADESCOM_CADES_X_LONG_TYPE_1 : cadesplugin.CADESCOM_PKCS7_TYPE);
                         }
                         catch (error) {
                             console.error(error);
