@@ -3441,43 +3441,48 @@ var licType;
  * @returns информацию о лицензиях установленного ПО
  */
 exports.getLicenseInfo = _afterPluginsLoaded_1._afterPluginsLoaded(function () {
-    var licInfo = {};
+    var getEmptyData = function () { return ({
+        validTo: '',
+        serialNumber: '',
+        firstInstall: '',
+        licType: '',
+        companyName: '',
+    }); };
+    var info = {
+        csp: getEmptyData(),
+        ocsp: getEmptyData(),
+        tsp: getEmptyData(),
+    };
     return eval(_generateCadesFn_1._generateCadesFn(function getLicenseInfo() {
-        var cadesLicense;
         try {
-            cadesLicense = _generateCadesFn_1.__cadesAsyncToken__ + _generateCadesFn_1.__createCadesPluginObject__('CAdESCOM.CPLicense');
-            licInfo.csp = {
-                validTo: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.ValidTo(licType.csp),
-                serialNumber: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.SerialNumber(licType.csp),
-                firstInstall: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.FirstInstallDate(licType.csp),
-                licType: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.Type(licType.csp),
-                companyName: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.CompanyName(licType.csp),
+            var cLic = _generateCadesFn_1.__cadesAsyncToken__ + _generateCadesFn_1.__createCadesPluginObject__('CAdESCOM.CPLicense');
+            info.csp = {
+                validTo: _generateCadesFn_1.__cadesAsyncToken__ + cLic.ValidTo(licType.csp),
+                serialNumber: _generateCadesFn_1.__cadesAsyncToken__ + cLic.SerialNumber(licType.csp),
+                firstInstall: _generateCadesFn_1.__cadesAsyncToken__ + cLic.FirstInstallDate(licType.csp),
+                licType: _generateCadesFn_1.__cadesAsyncToken__ + cLic.Type(licType.csp),
+                companyName: _generateCadesFn_1.__cadesAsyncToken__ + cLic.CompanyName(licType.csp),
             };
-            var bindLicType = function (type) {
-                return {
-                    validTo: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.ValidTo(type),
-                    serialNumber: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.SerialNumber(type),
-                    firstInstall: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.FirstInstallDate(type),
-                    licType: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.Type(type),
-                    companyName: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.CompanyName(type),
-                };
+            info.ocsp = {
+                validTo: _generateCadesFn_1.__cadesAsyncToken__ + cLic.ValidTo(licType.ocsp),
+                serialNumber: _generateCadesFn_1.__cadesAsyncToken__ + cLic.SerialNumber(licType.ocsp),
+                firstInstall: _generateCadesFn_1.__cadesAsyncToken__ + cLic.FirstInstallDate(licType.ocsp),
+                licType: _generateCadesFn_1.__cadesAsyncToken__ + cLic.Type(licType.ocsp),
+                companyName: _generateCadesFn_1.__cadesAsyncToken__ + cLic.CompanyName(licType.ocsp),
             };
-            licInfo.csp = bindLicType(licType.csp);
-            licInfo.ocsp = bindLicType(licType.ocsp);
-            licInfo.tsp = bindLicType(licType.tsp);
-            // sysInfo.cadesVersion = __cadesAsyncToken__ + cadesLicense.PluginVersion;
-            // sysInfo.cspVersion = __cadesAsyncToken__ + cadesLicense.CSPVersion();
-            // if (!sysInfo.cadesVersion) {
-            //   sysInfo.cadesVersion = __cadesAsyncToken__ + cadesLicense.Version;
-            // }
-            // sysInfo.cadesVersion = __cadesAsyncToken__ + sysInfo.cadesVersion.toString();
-            // sysInfo.cspVersion = __cadesAsyncToken__ + sysInfo.cspVersion.toString();
+            info.tsp = {
+                validTo: _generateCadesFn_1.__cadesAsyncToken__ + cLic.ValidTo(licType.tsp),
+                serialNumber: _generateCadesFn_1.__cadesAsyncToken__ + cLic.SerialNumber(licType.tsp),
+                firstInstall: _generateCadesFn_1.__cadesAsyncToken__ + cLic.FirstInstallDate(licType.tsp),
+                licType: _generateCadesFn_1.__cadesAsyncToken__ + cLic.Type(licType.tsp),
+                companyName: _generateCadesFn_1.__cadesAsyncToken__ + cLic.CompanyName(licType.tsp),
+            };
         }
         catch (error) {
             console.error(error);
-            throw new Error(_extractMeaningfulErrorMessage_1._extractMeaningfulErrorMessage(error) || 'Ошибка при получении информации о системе');
+            throw new Error(_extractMeaningfulErrorMessage_1._extractMeaningfulErrorMessage(error) || 'Ошибка при получении информации о лицензиях');
         }
-        return licInfo;
+        return info;
     }));
 });
 
