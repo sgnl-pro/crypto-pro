@@ -1,4 +1,4 @@
-import { CADESCOM_AUTHENTICATED_ATTRIBUTE_SIGNING_TIME } from '../constants';
+import { CADESCOM_AUTHENTICATED_ATTRIBUTE_SIGNING_TIME, TimestampServerType } from '../constants';
 import { _afterPluginsLoaded } from '../helpers/_afterPluginsLoaded';
 import { _extractMeaningfulErrorMessage } from '../helpers/_extractMeaningfulErrorMessage';
 import { __cadesAsyncToken__, __createCadesPluginObject__, _generateCadesFn } from '../helpers/_generateCadesFn';
@@ -10,11 +10,11 @@ import { _getDateObj } from '../helpers/_getDateObj';
  *
  * @param thumbprint - отпечаток сертификата
  * @param messageHash - хеш подписываемого сообщения, сгенерированный по ГОСТ Р 34.11-2012 256 бит
- * @param [tsaAddress] - сервер штампа времени
+ * @param [timestampOptions] - конфиг для сервера штампа времени
  * @returns подпись в формате PKCS#7
  */
 export const createDetachedSignature = _afterPluginsLoaded(
-  async (thumbprint: string, messageHash: string, tsaAddress?: string): Promise<string> => {
+  async (thumbprint: string, messageHash: string, timestampOptions?: TimestampServerType): Promise<string> => {
     const { cadesplugin } = window;
     const cadesCertificate = await _getCadesCert(thumbprint);
 
@@ -54,7 +54,8 @@ export const createDetachedSignature = _afterPluginsLoaded(
           cadesAuthAttrs = __cadesAsyncToken__ + cadesSigner.AuthenticatedAttributes2;
           void (__cadesAsyncToken__ + cadesAuthAttrs.Add(cadesAttrs));
           void (__cadesAsyncToken__ + cadesSigner.propset_Options(cadesplugin.CAPICOM_CERTIFICATE_INCLUDE_WHOLE_CHAIN));
-          tsaAddress && void (__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(tsaAddress));
+          timestampOptions?.tsaAddress &&
+            void (__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(timestampOptions.tsaAddress));
         } catch (error) {
           console.error(error);
 
@@ -81,7 +82,9 @@ export const createDetachedSignature = _afterPluginsLoaded(
             cadesSignedData.SignHash(
               cadesHashedData,
               cadesSigner,
-              tsaAddress ? cadesplugin.CADESCOM_CADES_X_LONG_TYPE_1 : cadesplugin.CADESCOM_PKCS7_TYPE,
+              timestampOptions?.tsaAddress
+                ? timestampOptions?.cadesType ?? cadesplugin.CADESCOM_CADES_T
+                : cadesplugin.CADESCOM_PKCS7_TYPE,
             );
         } catch (error) {
           console.error(error);

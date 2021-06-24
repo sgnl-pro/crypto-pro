@@ -2785,10 +2785,10 @@ var _getDateObj_1 = __webpack_require__(/*! ../helpers/_getDateObj */ "./helpers
  *
  * @param thumbprint - отпечаток сертификата
  * @param message - подписываемое сообщение
- * @param [tsaAddress] - сервер штампа времени
+ * @param [timestampOptions] - конфиг для сервера штампа времени
  * @returns подпись в формате PKCS#7
  */
-exports.createAttachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, unencryptedMessage, tsaAddress) { return __awaiter(void 0, void 0, void 0, function () {
+exports.createAttachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, unencryptedMessage, timestampOptions) { return __awaiter(void 0, void 0, void 0, function () {
     var cadesplugin, cadesCertificate;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -2798,6 +2798,7 @@ exports.createAttachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
             case 1:
                 cadesCertificate = _a.sent();
                 return [2 /*return*/, eval(_generateCadesFn_1._generateCadesFn(function createAttachedSignature() {
+                        var _a;
                         var cadesAttrs;
                         var cadesSignedData;
                         var cadesSigner;
@@ -2842,11 +2843,11 @@ exports.createAttachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
                         }
                         var signature;
                         try {
-                            if (tsaAddress) {
-                                void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(tsaAddress));
+                            if (timestampOptions === null || timestampOptions === void 0 ? void 0 : timestampOptions.tsaAddress) {
+                                void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(timestampOptions.tsaAddress));
                                 signature =
                                     _generateCadesFn_1.__cadesAsyncToken__ +
-                                        cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_CADES_X_LONG_TYPE_1, true);
+                                        cadesSignedData.SignCades(cadesSigner, (_a = timestampOptions === null || timestampOptions === void 0 ? void 0 : timestampOptions.cadesType) !== null && _a !== void 0 ? _a : cadesplugin.CADESCOM_CADES_T, true);
                             }
                             else {
                                 signature = _generateCadesFn_1.__cadesAsyncToken__ + cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_PKCS7_TYPE);
@@ -2923,10 +2924,10 @@ var _getDateObj_1 = __webpack_require__(/*! ../helpers/_getDateObj */ "./helpers
  *
  * @param thumbprint - отпечаток сертификата
  * @param messageHash - хеш подписываемого сообщения, сгенерированный по ГОСТ Р 34.11-2012 256 бит
- * @param [tsaAddress] - сервер штампа времени
+ * @param [timestampOptions] - конфиг для сервера штампа времени
  * @returns подпись в формате PKCS#7
  */
-exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, messageHash, tsaAddress) { return __awaiter(void 0, void 0, void 0, function () {
+exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(function (thumbprint, messageHash, timestampOptions) { return __awaiter(void 0, void 0, void 0, function () {
     var cadesplugin, cadesCertificate;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -2936,6 +2937,7 @@ exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
             case 1:
                 cadesCertificate = _a.sent();
                 return [2 /*return*/, eval(_generateCadesFn_1._generateCadesFn(function createDetachedSignature() {
+                        var _a;
                         var cadesAttrs;
                         var cadesHashedData;
                         var cadesSignedData;
@@ -2965,7 +2967,8 @@ exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
                             cadesAuthAttrs = _generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.AuthenticatedAttributes2;
                             void (_generateCadesFn_1.__cadesAsyncToken__ + cadesAuthAttrs.Add(cadesAttrs));
                             void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_Options(cadesplugin.CAPICOM_CERTIFICATE_INCLUDE_WHOLE_CHAIN));
-                            tsaAddress && void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(tsaAddress));
+                            (timestampOptions === null || timestampOptions === void 0 ? void 0 : timestampOptions.tsaAddress) &&
+                                void (_generateCadesFn_1.__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(timestampOptions.tsaAddress));
                         }
                         catch (error) {
                             console.error(error);
@@ -2984,7 +2987,7 @@ exports.createDetachedSignature = _afterPluginsLoaded_1._afterPluginsLoaded(func
                         try {
                             signature =
                                 _generateCadesFn_1.__cadesAsyncToken__ +
-                                    cadesSignedData.SignHash(cadesHashedData, cadesSigner, tsaAddress ? cadesplugin.CADESCOM_CADES_X_LONG_TYPE_1 : cadesplugin.CADESCOM_PKCS7_TYPE);
+                                    cadesSignedData.SignHash(cadesHashedData, cadesSigner, (timestampOptions === null || timestampOptions === void 0 ? void 0 : timestampOptions.tsaAddress) ? (_a = timestampOptions === null || timestampOptions === void 0 ? void 0 : timestampOptions.cadesType) !== null && _a !== void 0 ? _a : cadesplugin.CADESCOM_CADES_T : cadesplugin.CADESCOM_PKCS7_TYPE);
                         }
                         catch (error) {
                             console.error(error);
