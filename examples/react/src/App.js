@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createAttachedSignature, createDetachedSignature, createHash } from 'crypto-pro';
+import { createAttachedSignature, createDetachedSignature, createHash, getLicenseInfo, getSystemInfo } from 'crypto-pro';
 import Message from './components/Message';
 import Certificate from './components/Certificate';
 import SignatureType from './components/SignatureType';
@@ -64,6 +64,12 @@ function App() {
     setSignatureStatus('Не создана');
   }
 
+  async function test() {
+    const info = await getLicenseInfo();
+
+    setSignatureStatus(JSON.stringify(info))
+  }
+
   return (
     <>
       <form onSubmit={createSignature} noValidate>
@@ -83,6 +89,10 @@ function App() {
             type="submit"
             disabled={!certificate || !message}>
             Создать подпись
+          </button>
+
+          <button onClick={test} type="button">
+            Test
           </button>
         </fieldset>
       </form>

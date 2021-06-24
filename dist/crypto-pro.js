@@ -3413,6 +3413,74 @@ exports.getCertificate = _afterPluginsLoaded_1._afterPluginsLoaded(function (thu
 
 /***/ }),
 
+/***/ "./api/getLicenseInfo.ts":
+/*!*******************************!*\
+  !*** ./api/getLicenseInfo.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var _afterPluginsLoaded_1 = __webpack_require__(/*! ../helpers/_afterPluginsLoaded */ "./helpers/_afterPluginsLoaded.ts");
+var _extractMeaningfulErrorMessage_1 = __webpack_require__(/*! ../helpers/_extractMeaningfulErrorMessage */ "./helpers/_extractMeaningfulErrorMessage.ts");
+var _generateCadesFn_1 = __webpack_require__(/*! ../helpers/_generateCadesFn */ "./helpers/_generateCadesFn.ts");
+var licType;
+(function (licType) {
+    licType[licType["csp"] = 0] = "csp";
+    licType[licType["ocsp"] = 1] = "ocsp";
+    licType[licType["tsp"] = 2] = "tsp";
+})(licType || (licType = {}));
+/**
+ * Предоставляет информацию о системе
+ *
+ * @returns информацию о лицензиях установленного ПО
+ */
+exports.getLicenseInfo = _afterPluginsLoaded_1._afterPluginsLoaded(function () {
+    var licInfo = {};
+    return eval(_generateCadesFn_1._generateCadesFn(function getLicenseInfo() {
+        var cadesLicense;
+        try {
+            cadesLicense = _generateCadesFn_1.__cadesAsyncToken__ + _generateCadesFn_1.__createCadesPluginObject__('CAdESCOM.CPLicense');
+            licInfo.csp = {
+                validTo: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.ValidTo(licType.csp),
+                serialNumber: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.SerialNumber(licType.csp),
+                firstInstall: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.FirstInstallDate(licType.csp),
+                licType: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.Type(licType.csp),
+                companyName: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.CompanyName(licType.csp),
+            };
+            var bindLicType = function (type) {
+                return {
+                    validTo: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.ValidTo(type),
+                    serialNumber: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.SerialNumber(type),
+                    firstInstall: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.FirstInstallDate(type),
+                    licType: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.Type(type),
+                    companyName: _generateCadesFn_1.__cadesAsyncToken__ + cadesLicense.CompanyName(type),
+                };
+            };
+            licInfo.csp = bindLicType(licType.csp);
+            licInfo.ocsp = bindLicType(licType.ocsp);
+            licInfo.tsp = bindLicType(licType.tsp);
+            // sysInfo.cadesVersion = __cadesAsyncToken__ + cadesLicense.PluginVersion;
+            // sysInfo.cspVersion = __cadesAsyncToken__ + cadesLicense.CSPVersion();
+            // if (!sysInfo.cadesVersion) {
+            //   sysInfo.cadesVersion = __cadesAsyncToken__ + cadesLicense.Version;
+            // }
+            // sysInfo.cadesVersion = __cadesAsyncToken__ + sysInfo.cadesVersion.toString();
+            // sysInfo.cspVersion = __cadesAsyncToken__ + sysInfo.cspVersion.toString();
+        }
+        catch (error) {
+            console.error(error);
+            throw new Error(_extractMeaningfulErrorMessage_1._extractMeaningfulErrorMessage(error) || 'Ошибка при получении информации о системе');
+        }
+        return licInfo;
+    }));
+});
+
+
+/***/ }),
+
 /***/ "./api/getSystemInfo.ts":
 /*!******************************!*\
   !*** ./api/getSystemInfo.ts ***!
@@ -3566,6 +3634,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(/*! ./getCertificate */ "./api/getCertificate.ts"));
 __export(__webpack_require__(/*! ./getUserCertificates */ "./api/getUserCertificates.ts"));
 __export(__webpack_require__(/*! ./getSystemInfo */ "./api/getSystemInfo.ts"));
+__export(__webpack_require__(/*! ./getLicenseInfo */ "./api/getLicenseInfo.ts"));
 __export(__webpack_require__(/*! ./isValidSystemSetup */ "./api/isValidSystemSetup.ts"));
 __export(__webpack_require__(/*! ./createSignature */ "./api/createSignature.ts"));
 __export(__webpack_require__(/*! ./createXMLSignature */ "./api/createXMLSignature.ts"));
