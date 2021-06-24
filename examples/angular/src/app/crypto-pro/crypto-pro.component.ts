@@ -9,7 +9,7 @@ import {
   createAttachedSignature,
   SystemInfo,
   Certificate
-} from 'crypto-pro';
+} from '@sgnl-pro/crypto-pro-tsa';
 
 @Component({
   selector: 'app-crypto-pro',

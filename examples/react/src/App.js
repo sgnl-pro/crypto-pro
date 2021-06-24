@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createAttachedSignature, createDetachedSignature, createHash, getLicenseInfo, getSystemInfo } from 'crypto-pro';
+import { createAttachedSignature, createDetachedSignature, createHash, getLicenseInfo, getSystemInfo } from '@sgnl-pro/crypto-pro-tsa';
 import Message from './components/Message';
 import Certificate from './components/Certificate';
 import SignatureType from './components/SignatureType';

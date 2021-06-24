@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getSystemInfo, isValidSystemSetup } from 'crypto-pro';
+import { getSystemInfo, isValidSystemSetup } from '@sgnl-pro/crypto-pro-tsa';
 
 function SystemInfo() {
   const [systemInfo, setSystemInfo] = useState(null);
