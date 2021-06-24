@@ -1,4 +1,4 @@
-import { CADESCOM_AUTHENTICATED_ATTRIBUTE_SIGNING_TIME } from '../constants';
+import { CADESCOM_AUTHENTICATED_ATTRIBUTE_SIGNING_TIME, TimestampServerType } from '../constants';
 import { _afterPluginsLoaded } from '../helpers/_afterPluginsLoaded';
 import { _extractMeaningfulErrorMessage } from '../helpers/_extractMeaningfulErrorMessage';
 import { __cadesAsyncToken__, __createCadesPluginObject__, _generateCadesFn } from '../helpers/_generateCadesFn';
@@ -10,11 +10,15 @@ import { _getDateObj } from '../helpers/_getDateObj';
  *
  * @param thumbprint - отпечаток сертификата
  * @param message - подписываемое сообщение
- * @param [tsaAddress] - сервер штампа времени
+ * @param [timestampOptions] - конфиг для сервера штампа времени
  * @returns подпись в формате PKCS#7
  */
 export const createAttachedSignature = _afterPluginsLoaded(
-  async (thumbprint: string, unencryptedMessage: string | ArrayBuffer, tsaAddress?: string): Promise<string> => {
+  async (
+    thumbprint: string,
+    unencryptedMessage: string | ArrayBuffer,
+    timestampOptions?: TimestampServerType,
+  ): Promise<string> => {
     const { cadesplugin } = window;
     const cadesCertificate = await _getCadesCert(thumbprint);
 
@@ -73,11 +77,11 @@ export const createAttachedSignature = _afterPluginsLoaded(
         let signature: string;
 
         try {
-          if (tsaAddress) {
-            void (__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(tsaAddress));
+          if (timestampOptions?.tsaAddress) {
+            void (__cadesAsyncToken__ + cadesSigner.propset_TSAAddress(timestampOptions.tsaAddress));
             signature =
               __cadesAsyncToken__ +
-              cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_CADES_X_LONG_TYPE_1, true);
+              cadesSignedData.SignCades(cadesSigner, timestampOptions?.cadesType ?? cadesplugin.CADESCOM_CADES_T, true);
           } else {
             signature = __cadesAsyncToken__ + cadesSignedData.SignCades(cadesSigner, cadesplugin.CADESCOM_PKCS7_TYPE);
           }

@@ -1,5 +1,5 @@
 {
-  "name": "@sgnl-pro/crypto-pro",
+  "name": "@sgnl-pro/crypto-pro-tsa",
   "version": "2.2.2",
   "description": "API для взаимодействия с КриптоПро",
   "main": "./lib/crypto-pro.js",
